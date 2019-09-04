@@ -50,4 +50,5 @@ Route::get('/post/pruebas', 'PostController@pruebas');
 //Rutas del controlador de usuario
 Route::post('/api/register', 'UserController@register');
 Route::post('/api/login', 'UserController@login');
-Route::post('/api/user/update', 'UserController@update');
+Route::put('/api/user/update', 'UserController@update');
+Route::post('/api/user/upload', 'UserController@upload');

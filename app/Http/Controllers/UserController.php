@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\JwtAuth;
+//use App\Helpers\JwtAuth;
 use Illuminate\Http\Request;
 use Validator;
 use \App\User;
@@ -122,7 +122,7 @@ class UserController extends Controller
                     $signup = $jwtAuth->signup($params->email, $pwd, true);
                 }
             }
-        }else {//envio de json vacio
+        } else { //envio de json vacio
             $signup = array(
                 'status' => 'error',
                 'code' => 404,
@@ -133,17 +133,67 @@ class UserController extends Controller
         return response()->json($signup, 200);
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
+
+        //comprobar si el usuario esta identificado
         $token = $request->header('Authorization');
         $jwtAuth = new \JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
 
-        if($checkToken){
-            echo "<h1>Login correcto</h1>";
-        }else{
-            echo "<h1>Login INCORRECTO</h1>";
+        //Recoger los datos por POST
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true); //recibe json para transformarlo en un objeto php
+
+        if ($checkToken && !empty($params_array)) {
+            //Actualizar el usuario
+            //Validar datos
+            //sacar usuario identificado
+            $user = $jwtAuth->checkToken($token, true);
+            $params_array = array_map('trim', $params_array);
+
+            $validate = Validator::make($params_array, [
+                'name' => 'required|alpha',
+                'surname' => 'required|alpha',
+                'email' => 'required|email|unique:users' . $user->sub
+            ]);
+
+            //Quitar los campos que no se quieran actualizar
+            unset($params_array['id']);
+            unset($params_array['role']);
+            unset($params_array['password']);
+            unset($params_array['created_at']);
+            unset($params_array['remember_token']);
+
+            //Actualizar usuario en bdd
+            $user_update = User::where('id', $user->sub)->update($params_array);
+
+            //devolver array con resultado
+            $data = array(
+                'code' => 200,
+                'status' => 'success',
+                'message' => $user,
+                'changes' => $params_array
+            );
+        } else {
+            //devolver mensaje de error
+            $data = array(
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'El usuario no esta identificado'
+            );
         }
 
-        die();
+        return response()->json($data, $data['code']);
+    }
+
+    public function upload(Request $request){
+        $data = array(
+            'code' => 400,
+            'status' => 'error',
+            'message' => 'El usuario no se ha identificado'
+        );
+
+        return response()->json($data, $data['code']);
     }
 }
