@@ -22,6 +22,13 @@ class ApiAuthMiddleware
 
         if ($checkToken) {
             return $next($request);
+        } else {
+            $data = array(
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'Usuario no identificado'
+            );
+            return response()->json($data, $data['code']);
         }
     }
 }
