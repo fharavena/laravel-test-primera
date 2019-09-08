@@ -43,9 +43,9 @@ Metodos HTTP
 */
 
 //Rutas de api
-Route::get('/usuario/pruebas', 'UserController@pruebas');
-Route::get('/categoria/pruebas', 'CategoryController@pruebas');
-Route::get('/post/pruebas', 'PostController@pruebas');
+// Route::get('/usuario/pruebas', 'UserController@pruebas');
+// Route::get('/categoria/pruebas', 'CategoryController@pruebas');
+// Route::get('/post/pruebas', 'PostController@pruebas');
 
 
 //Rutas del controlador de usuario
@@ -53,3 +53,11 @@ Route::post('/api/register', 'UserController@register');
 Route::post('/api/login', 'UserController@login');
 Route::put('/api/user/update', 'UserController@update');
 Route::post('/api/user/upload', 'UserController@upload')->middleware(ApiAuthMiddleware::class);
+Route::get('/api/user/avatar/{filename}', 'UserController@getImage');
+Route::get('/api/user/detail/{id}', 'UserController@detail');
+
+//Controlador de controlador de categorias
+Route::resource('/api/category', 'CategoryController');
+
+//Rutas del controlador de entradas
+Route::resource('/api/post', 'PostController');
