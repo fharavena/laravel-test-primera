@@ -1,0 +1,4 @@
+php artisan route:list
+php artisan --version
+php artisan make:provider JwtAuthServiceProvider
+php artisan make:middleware ApiAuthMiddleware
