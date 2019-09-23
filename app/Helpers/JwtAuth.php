@@ -58,11 +58,11 @@ class JwtAuth
 
     public function checkToken($jwt, $getIdentity = false)
     {
-        $auth = false;
-
+        
         try {
             $jwt = str_replace('"', "", $jwt);
             $decoded = JWT::decode($jwt, $this->key, ['HS256']);
+            // var_dump($decoded);die();
         } catch (\UnexpectedValueException $e) {
             $auth = false;
         } catch (\DomainException $e) {

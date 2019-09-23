@@ -27,7 +27,8 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::find($id)->load('category');
+        $post = Post::find($id)->load('category')
+                                ->load('user');
 
         if (is_object($post)) {
             $data =  [
@@ -200,23 +201,24 @@ class PostController extends Controller
     {
         //recoger la image de la peticion
         $image = $request->file('file0');
-
+        
         //validar imagen
         $validate = \Validator::make($request->all(), [
             'file0' => 'required|image|mimes:jpg,jpeg,png,gif'
-        ]);
-
-        //guardar la imagen
-        if (!$image || $validate->fails()) {
-            $data = [
-                'code' => 400,
-                'status' => 'error',
-                'message' => 'Error al subir la imagen'
-            ];
-        } else {
-            $image_name = time() . $image->getClientOriginalName();
-
-            \Storage::disk('images')->put($image_name, \File::get($image));
+            ]);
+            
+            //guardar la imagen
+            if (!$image || $validate->fails()) {
+                $data = [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Error al subir la imagen'
+                ];
+            } else {
+                $image_name = time() . $image->getClientOriginalName();
+                
+                \Storage::disk('images')->put($image_name, \File::get($image));
+                //var_dump("aqui");die();
 
             $data = [
                 'code' => 200,

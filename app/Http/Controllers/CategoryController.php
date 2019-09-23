@@ -91,6 +91,7 @@ class CategoryController extends Controller
         //recoger datos por post
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
+        var_dump("aqui");die();
 
         if (!empty($params_array)) {
             //validar los datos

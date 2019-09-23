@@ -24,19 +24,20 @@ class UserController extends Controller
         $params = json_decode($json); //objeto
         $params_array = json_decode($json, true); //array
 
+        
         if (!empty($params) && !empty($params_array)) {
             //limpiar datos
             $params_array = array_map('trim', $params_array);
-
+            
             $rules = array(
                 'name' => 'required|alpha',
                 'surname' => 'required|alpha',
                 'email' => 'required|email|unique:users',
                 'password' => 'required'
             );
-
+            
             $validate = Validator::make($params_array, $rules);
-
+            
             if ($validate->fails()) {
                 //Validacion pasada incorrectamente
                 $data = array(
@@ -55,8 +56,9 @@ class UserController extends Controller
                 $user->email = $params_array['email'];
                 $user->password = $pwd;
                 $user->role = 'ROLE_USER';
-
+                
                 //Guardar usuario
+                
                 $user->save();
 
                 $data = array(
